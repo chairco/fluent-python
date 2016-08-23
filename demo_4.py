@@ -1,6 +1,4 @@
 # demo_4.py
-from collections import namedtuple
-
 
 """
 Usage:
@@ -25,6 +23,11 @@ Usage:
     >>> Order(joe, cart, large_order_promo)
     <Order total: 42.00 due: 42.00>
 """
+
+from collections import namedtuple
+import inspect
+
+import promotions
 
 
 Customer = namedtuple('Customer', 'name fidelity')
@@ -87,10 +90,23 @@ def large_order_promo(order):
         return order.total() * .07
     return 0
 
+# strategy use global()
+#promos = [globals()[name] for name in globals()
+#            if name.endswith('_promo')
+#            and name != 'best_promo']
+
+# strategy use module promotion
+promos = [func for name, func in
+                inspect.getmembers(promotions, inspect.isfunction)]
+
+
+# strategy use closure
+#TODO(yichieh)
+
 
 def best_promo(order):
     """Select best discount avaiable"""
-    promos = [fidelity_promo, bulk_item_promo, large_order_promo]
+    #promos = [fidelity_promo, bulk_item_promo, large_order_promo]
     return max(promo(order) for promo in promos)
 
 
