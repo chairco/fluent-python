@@ -33,7 +33,6 @@ import promotions
 Customer = namedtuple('Customer', 'name fidelity')
 
 
-
 class LineItem:
 
     def __init__(self, product, quantity, price):
