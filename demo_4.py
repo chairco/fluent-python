@@ -5,7 +5,7 @@ from collections import namedtuple
 """
 Usage:
     >>> joe = Customer('John Doe', 0)
-    >>> ane = Customer('Ann Smith', 1100)
+    >>> ann = Customer('Ann Smith', 1100)
     cart = [LineItem('banana', 4, .5),
             LineItem('apple', 10, 1.5),
             LineItem('watermllon', 5, 5.0)]
@@ -28,6 +28,7 @@ Usage:
 
 
 Customer = namedtuple('Customer', 'name fidelity')
+
 
 
 class LineItem:
@@ -58,7 +59,7 @@ class Order: # the Context
             discount = 0
         else:
             discount = self.promotion(self)
-        return self.total()
+        return self.total() - discount
 
     def __repr__(self):
         fmt = '<Order total: {:.2f} due: {:.2f}>'
@@ -75,7 +76,7 @@ def bulk_item_promo(order):
     discount = 0 
     for item in order.cart:
         if item.quantity >= 20:
-            discount += item.totla() * .1
+            discount += item.total() * .1
     return discount
 
 
@@ -83,6 +84,41 @@ def large_order_promo(order):
     """7% discount for orders with 10 or more distinct items"""
     distinct_items = {item.product for item in order.cart}
     if len(distinct_items) >= 10:
-        returnorder.total() * .07
+        return order.total() * .07
     return 0
+
+
+def best_promo(order):
+    """Select best discount avaiable"""
+    promos = [fidelity_promo, bulk_item_promo, large_order_promo]
+    return max(promo(order) for promo in promos)
+
+
+def main():
+    joe = Customer('John Doe', 0)
+    ann = Customer('Ann Smith', 1100)
+    
+    cart = [LineItem('banana', 4, .5),
+            LineItem('apple', 10, 1.5),
+            LineItem('watermllon', 5, 5.0)]
+    print(Order(joe, cart, fidelity_promo))
+    print(Order(ann, cart, fidelity_promo))
+    
+    banana_cart = [LineItem('banana', 30, .5), 
+                   LineItem('apple', 10, 1.5)]
+    print(Order(joe, banana_cart, bulk_item_promo))
+    
+    long_order = [LineItem(str(item_code), 1, 1.0)
+                  for item_code in range(10)]
+    print(Order(joe, long_order, large_order_promo))
+    
+    print(Order(joe, cart, large_order_promo))
+
+    # best_strategy:
+    print('Best:', Order(joe, long_order, best_promo))
+    print('Best:', Order(ann, cart, best_promo))
+
+
+if __name__ == '__main__':
+    main()
 
