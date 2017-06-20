@@ -89,10 +89,12 @@ def large_order_promo(order):
         return order.total() * .07
     return 0
 
+
 # strategy use global()
 #promos = [globals()[name] for name in globals()
 #            if name.endswith('_promo')
 #            and name != 'best_promo']
+
 
 # strategy use module promotion
 promos = [func for name, func in
@@ -118,7 +120,7 @@ def main():
             LineItem('watermllon', 5, 5.0)]
     print(Order(joe, cart, fidelity_promo))
     print(Order(ann, cart, fidelity_promo))
-    
+
     banana_cart = [LineItem('banana', 30, .5), 
                    LineItem('apple', 10, 1.5)]
     print(Order(joe, banana_cart, bulk_item_promo))
